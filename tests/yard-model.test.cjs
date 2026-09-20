@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path');
+const Y=require(fs.existsSync(path.join(__dirname,'../dist/yard-model.js'))?'../dist/yard-model.js':'../yard-model.js');
+assert.equal(Y.scale([120,60],100),3);
+assert.equal(Y.scale([1200,600],100),.65);
+assert.equal(Y.occupied(['A','B'],{A:15,B:20}),35);
+const g=Y.geometry([120,80,60],100);assert.equal(g.starts[0],g.ladderRoot);assert.equal(g.commonEnd-g.starts[1],80*g.pxPerMetre);assert.equal(g.commonEnd-g.starts[2],60*g.pxPerMetre);
+assert.deepEqual(Y.move([['A','B'],['C']], 'A',1,1,{A:15,B:20,C:10},[50,40]),[['B'],['C','A']]);
+assert.deepEqual(Y.move([['A','B'],['C']], 'B',0,0,{A:15,B:20,C:10},[50,40]),[['B','A'],['C']]);
+assert.throws(()=>Y.move([['A'],['B']], 'A',1,1,{A:15,B:20},[30,30]),/容量不足/);
+console.log('PASS: proportional scale, occupied length, reorder, cross-track move, capacity rejection');
